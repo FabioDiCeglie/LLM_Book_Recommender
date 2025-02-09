@@ -18,3 +18,23 @@ text_splitter = CharacterTextSplitter(chunk_size=0, chunk_overlap=0, separator="
 documents = text_splitter.split_documents(raw_documents)
 
 db_books = Chroma.from_documents(documents, embedding=OpenAIEmbeddings())
+
+query = "A book to teach children about nature"
+docs = db_books.similarity_search(query, k = 10)
+
+books[books["isbn13"] == int(docs[0].page_content.split()[0].strip())]
+
+def retrieve_semantic_recommendations(
+        query: str,
+        top_k: int = 10,
+) -> pd.DataFrame:
+    recs = db_books.similarity_search(query, k = 50)
+
+    books_list = []
+
+    for i in range(0, len(recs)):
+        books_list += [int(recs[i].page_content.strip('"').split()[0])]
+
+    return books[books["isbn13"].isin(books_list)]
+
+retrieve_semantic_recommendations("A book to teach children about nature")
