@@ -65,7 +65,7 @@ for i in tqdm(range(0, 300)):
 
 predictions_df = pd.DataFrame({'actual_categories': actual_cats, 'predicted_categories': predicted_cats})
 predictions_df['correct_prediction'] = (
-    np.where(predictions_df['actual_cateogries'] == predictions_df['predicted_categories'], 1, 0)
+    np.where(predictions_df['actual_categories'] == predictions_df['predicted_categories'], 1, 0)
 )
 predictions_df["correct_prediction"].sum() / len(predictions_df)
 # 0.77
@@ -86,7 +86,7 @@ missing_predicted_df = pd.DataFrame({'isbn13': isbns, 'predicted_categories': pr
 
 books = pd.merge(books, missing_predicted_df, on='isbn13', how='left')
 books['simple_categories'] = np.where(books['simple_categories'].isna(), books['predicted_categories'], books['simple_categories'])
-books = books.drop(column= ['predicted_categories'])
+books = books.drop(columns = ["predicted_categories"])
 books[books["categories"].str.lower().isin([
     "romance",
     "science fiction",
