@@ -53,6 +53,13 @@ for i in tqdm(range(len(books))):
     isbn.append(books["isbn13"][i])
     sentences = books["description"][i].split(".")
     predictions = classifier(sentences)
+    # Finds the strongest emotion score per label 
     max_scores = calculate_max_emotion_scores(predictions)
     for label in emotion_labels:
         emotion_scores[label].append(max_scores[label])
+
+emotions_df = pd.DataFrame(emotion_scores)
+emotions_df['isbn13'] = isbn
+
+books = pd.merge(books, emotions_df, on='isbn13')
+books.to_csv('books_with_emotions.csv', index=False)
